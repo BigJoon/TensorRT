@@ -33,3 +33,9 @@ Faster R-CNN은 RCNN이나 Fast R-CNN 보다 빠르고 정확합니다. 왜냐�
 - [Building the engine](#building-the-engine)
 - [Running the engine](#running-the-engine)
 - [Verifying the output](#verifying-the-output)
+
+sampleFasterRCNN 예제는 TensorRT plugin library에 있는 plugin을 사용합니다. TensorRT plugin library에는 Faster R-CNN의 RPN과 ROI Pooling레이어들이 통합구현된 것이 들어있습니다. 이 특정한 레이어들은 Faster R-CNN 논문에서 가져왔고 'RPNROIPlugin'이라는 오직 단 하나의 plugin으로 만들어져있습니다. 이 plugin은 TensorRT Plugin Registry에 'RPROI_TRT'라는 이름으로 등록되어 있어요.
+
+### Preprocessing the input(입력을 좀 다듬기)
+
+Faster R-CNN은 입력으로 3개의 채널 그리고 375x500사이즈로 된 이미지입니다.
