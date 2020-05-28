@@ -36,6 +36,8 @@ Faster R-CNN은 RCNN이나 Fast R-CNN 보다 빠르고 정확합니다. 왜냐�
 
 sampleFasterRCNN 예제는 TensorRT plugin library에 있는 plugin을 사용합니다. TensorRT plugin library에는 Faster R-CNN의 RPN과 ROI Pooling레이어들이 통합구현된 것이 들어있습니다. 이 특정한 레이어들은 Faster R-CNN 논문에서 가져왔고 'RPNROIPlugin'이라는 오직 단 하나의 plugin으로 만들어져있습니다. 이 plugin은 TensorRT Plugin Registry에 'RPROI_TRT'라는 이름으로 등록되어 있어요.
 
-### Preprocessing the input(입력을 좀 다듬기)
+### Preprocessing the input(입력 좀 다듬기)
 
-Faster R-CNN은 입력으로 3개의 채널 그리고 375x500사이즈로 된 이미지입니다.
+Faster R-CNN은 입력으로 3개의 채널 그리고 375x500사이즈로 된 이미지입니다. TensorRT는 그 어떤 컴퓨터 비젼 라이브러리도 사용하지 않기 때문에, 이미지들은 각 픽셀마다 'R', 'G' 그리고 'B'라는 순서의 바이너리 값들로 구성되어 있죠. 포맷은 Portable PixMap(PPM)인데, 이건 netpbm 색깔 이미지 포맷이에요. 이 포맷에서 'R', 'G', 'B' 값들은 주로 (0~255)의 바이트 정수로 구성이 됩니다. 그것들은 픽셀마다 같이 저장되어 있어요.(이거 쓸데없는 말임.안봐도 됨.궁금하면 찾아서 이미지 포맷 확인하고)
+
+그런데, Faster R-CNN을 보면 'B', 'G', 'R'순서로 입력을 받아요. 그래서 이 네트워크에 입력으로 넣어서 옳바른 결과를 얻고 싶다면 순서를 뒤짚어야해요.
