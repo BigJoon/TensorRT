@@ -58,4 +58,4 @@ for (int i = 0, volImg = INPUT_C*INPUT_H*INPUT_W; i < N; ++i)
 	}
 }
 ```
-simple PPM 읽기 함수가 있어요. 그건 'readPPMFile'이라고 부르구요
+simple PPM 읽기 함수가 있어요. 그건 'readPPMFile' 이라고 부르구요
