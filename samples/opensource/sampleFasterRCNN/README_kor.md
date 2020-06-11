@@ -41,3 +41,21 @@ sampleFasterRCNN 예제는 TensorRT plugin library에 있는 plugin을 사용합
 Faster R-CNN은 입력으로 3개의 채널 그리고 375x500사이즈로 된 이미지입니다. TensorRT는 그 어떤 컴퓨터 비젼 라이브러리도 사용하지 않기 때문에, 이미지들은 각 픽셀마다 'R', 'G' 그리고 'B'라는 순서의 바이너리 값들로 구성되어 있죠. 포맷은 Portable PixMap(PPM)인데, 이건 netpbm 색깔 이미지 포맷이에요. 이 포맷에서 'R', 'G', 'B' 값들은 주로 (0~255)의 바이트 정수로 구성이 됩니다. 그것들은 픽셀마다 같이 저장되어 있어요.(이거 쓸데없는 말임.안봐도 됨.궁금하면 찾아서 이미지 포맷 확인하고)
 
 그런데, Faster R-CNN을 보면 'B', 'G', 'R'순서로 입력을 받아요. 그래서 이 네트워크에 입력으로 넣어서 옳바른 결과를 얻고 싶다면 순서를 뒤짚어야해요.
+
+```
+float* data = new float[N*INPUT_C*INPUT_H*INPUT_W];
+// pixel mean used by the Faster R-CNN's author
+float pixelMean[3]{ 102.9801f, 115.9465f, 122.7717f }; // also in BGR order
+for (int i = 0, volImg = INPUT_C*INPUT_H*INPUT_W; i < N; ++i)
+{
+	for (int c = 0; c < INPUT_C; ++c)
+	{
+		// the color image to input should be in BGR order
+		for (unsigned j = 0, volChl = INPUT_H*INPUT_W; j < volChl; ++j)
+        {
+            data[i*volImg + c*volChl + j] =  float(ppms[i].buffer[j*INPUT_C + 2 - c]) - pixelMean[c];
+        }
+	}
+}
+```
+simple PPM 읽기 함수가 있어요. 그건 'readPPMFile'이라고 부르구요
